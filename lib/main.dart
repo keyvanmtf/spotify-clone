@@ -1,9 +1,27 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:spotify_clone/core/configs/theme/app_theme.dart';
+import 'package:spotify_clone/configs/theme/app_theme.dart';
+import 'package:spotify_clone/features/splash/presentation/pages/splash.dart';
+import 'package:spotify_clone/locator.dart';
 
-import 'package:spotify_clone/pages/splash.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyB3r6GrjgChyXJLO1rfR_P3WEw41oBs2VQ",
+          authDomain: "spotify-clone-d906b.firebaseapp.com",
+          projectId: "spotify-clone-d906b",
+          storageBucket: "spotify-clone-d906b.appspot.com",
+          messagingSenderId: "689928277089",
+          appId: "1:689928277089:web:5436b810d4740e532dee20"),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
+  await initilizeDependencies();
 
-void main() {
   runApp(const MyApp());
 }
 
