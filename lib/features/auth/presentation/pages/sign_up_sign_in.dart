@@ -72,8 +72,7 @@ class SignUpSignIn extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const SignIn()));
+                                  builder: (BuildContext context) => SignIn()));
                         },
                         child: Text(
                           "ورود",

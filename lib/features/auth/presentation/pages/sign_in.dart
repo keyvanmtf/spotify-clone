@@ -3,11 +3,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotify_clone/configs/assets/app_vecctors.dart';
 import 'package:spotify_clone/core/widgets/app_bar.dart';
 import 'package:spotify_clone/core/widgets/basic_button.dart';
+import 'package:spotify_clone/features/auth/data/models/signin_user_req.dart';
+import 'package:spotify_clone/features/auth/domain/use_cases/sign_in.dart';
 import 'package:spotify_clone/features/auth/presentation/pages/signup.dart';
+import 'package:spotify_clone/features/home/presentation/pages/home.dart';
+import 'package:spotify_clone/locator.dart';
 
 class SignIn extends StatelessWidget {
-  const SignIn({super.key});
-
+  SignIn({super.key});
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +38,7 @@ class SignIn extends StatelessWidget {
             _passwordField(context),
             const SizedBox(height: 20),
             BasicBtn(
-              onPressed: () {},
+              onPressed: () => _signIn(context),
               title: " ورود",
             ),
           ],
@@ -51,16 +56,18 @@ class SignIn extends StatelessWidget {
 
   Widget _emailField(BuildContext context) {
     return TextField(
+        controller: _email,
         decoration: const InputDecoration(
-      hintText: "ایمیل",
-    ).applyDefaults(Theme.of(context).inputDecorationTheme));
+          hintText: "ایمیل",
+        ).applyDefaults(Theme.of(context).inputDecorationTheme));
   }
 
   Widget _passwordField(BuildContext context) {
     return TextField(
+        controller: _password,
         decoration: const InputDecoration(
-      hintText: "پسورد",
-    ).applyDefaults(Theme.of(context).inputDecorationTheme));
+          hintText: "پسورد",
+        ).applyDefaults(Theme.of(context).inputDecorationTheme));
   }
 
   Widget _signText(BuildContext context) {
@@ -84,5 +91,45 @@ class SignIn extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _signIn(BuildContext context) async {
+    try {
+      var result = await sl<SignInUseCase>().call(
+        params: SigninUserReq(
+          email: _email.text.toString(),
+          password: _password.text.toString(),
+        ),
+      );
+
+      result.fold(
+        (error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.red,
+            ),
+          );
+        },
+        (success) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => const HomePage()),
+            (route) => false,
+          );
+        },
+      );
+    } catch (e) {
+      print("Unexpected error: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("خطای غیرمنتظره. لطفاً دوباره تلاش کنید."),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }
