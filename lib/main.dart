@@ -10,12 +10,12 @@ void main() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-          apiKey: "AIzaSyB3r6GrjgChyXJLO1rfR_P3WEw41oBs2VQ",
-          authDomain: "spotify-clone-d906b.firebaseapp.com",
-          projectId: "spotify-clone-d906b",
-          storageBucket: "spotify-clone-d906b.appspot.com",
-          messagingSenderId: "689928277089",
-          appId: "1:689928277089:web:5436b810d4740e532dee20"),
+          apiKey: "xxxxx",
+          authDomain: "xxxx",
+          projectId: "xxxxx",
+          storageBucket: "xxxxxx",
+          messagingSenderId: "xxxxx",
+          appId: "1:xxxxxx"),
     );
   } else {
     await Firebase.initializeApp();
