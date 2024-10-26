@@ -13,6 +13,7 @@ class SignIn extends StatelessWidget {
   SignIn({super.key});
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  // final FirebaseAuth _auth = sl<FirebaseAuth>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +66,7 @@ class SignIn extends StatelessWidget {
   Widget _passwordField(BuildContext context) {
     return TextField(
         controller: _password,
+        obscureText: true,
         decoration: const InputDecoration(
           hintText: "پسورد",
         ).applyDefaults(Theme.of(context).inputDecorationTheme));
@@ -94,6 +96,7 @@ class SignIn extends StatelessWidget {
   }
 
   Future<void> _signIn(BuildContext context) async {
+    // User? user = _auth.currentUser;
     try {
       var result = await sl<SignInUseCase>().call(
         params: SigninUserReq(
@@ -113,16 +116,33 @@ class SignIn extends StatelessWidget {
           );
         },
         (success) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => const HomePage()),
-            (route) => false,
-          );
+          try {
+            // if (user != null) {
+            // کاربر لاگین شده است، او را به صفحه Home هدایت کنید
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => const HomePage()),
+              (route) => false,
+            );
+            // } else {
+            // کاربر لاگین نشده است، او را به صفحه Login هدایت کنید
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => const SignUpSignIn()),
+            // );
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("shared prefence dont work!"),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         },
       );
     } catch (e) {
-      print("Unexpected error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("خطای غیرمنتظره. لطفاً دوباره تلاش کنید."),
